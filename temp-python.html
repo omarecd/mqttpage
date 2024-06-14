@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MQTT Event Chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+</head>
+<body>
+    <canvas id="myChart" width="400" height="400"></canvas>
+    <script>
+        // Fetch data from your URL
+        fetch('https://storagemqttomar3.blob.core.windows.net/mqttdata03/0_d1b895130cb947bbb0c5d2d791605c20_1.json')
+            .then(response => response.json())
+            .then(data => {
+                const timestamps = data.map(item => item.time);
+                const values = data.map(item => item.value);
+
+                // Create the chart
+                const ctx = document.getElementById('myChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: timestamps,
+                        datasets: [{
+                            label: 'MQTT Event Values',
+                            data: values,
+                            borderColor: 'blue',
+                            fill: false,
+                        }],
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'second', // Adjust as needed (e.g., 'minute', 'hour', etc.)
+                                },
+                            },
+                            y: {
+                                beginAtZero: true,
+                            },
+                        },
+                    },
+                });
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>
